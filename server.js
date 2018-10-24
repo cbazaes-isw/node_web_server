@@ -1,17 +1,36 @@
 const express = require('express');
 const app = express();
 
-app.get('/', (request, response) => {
-    let salida = {
-        nombre:'Cristian',
-        edad:37,
-        url:request.url
-    };
-    response.send(salida);
+const hbs = require('hbs');
+require('./hbs/helpers')
+
+const port = process.env.PORT || 3000;
+
+app.use(express.static(__dirname + '/public'));
+
+// Express HBS engine
+hbs.registerPartials(__dirname + '/views/parciales');
+app.set('view engine', 'hbs');
+
+app.get('/', (rq, rs) => {
+
+    rs.render('home', {
+        nombre: 'cRISTIAN bAZAES',
+        anio: new Date().getFullYear()
+    });
+
 });
 
-app.get('/data', (request, response) => {
-    response.send('Hola data!');
+app.get('/about', (rq, rs) => {
+
+    rs.render('about', {
+        anio: new Date().getFullYear()
+    });
+
 });
 
-app.listen(3000);
+app.listen(port, () => {
+
+    console.log(`Escuchando peticiones en el puerto ${port}...`);
+
+});
